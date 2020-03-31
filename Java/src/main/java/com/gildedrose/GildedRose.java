@@ -9,7 +9,6 @@ class GildedRose {
 	public static final String ITEM_SULFURAS = "Sulfuras, Hand of Ragnaros";
 	public static final String ITEM_CONJURED = "Conjured, The Hand of God";
 
-	public static final int MIN_QUALITY_TRESHOLD = 0;
 	public static final int MAX_QUALITY_TRESHOLD = 50;
 
 	public static final int NORMAL_DEGRADATION = 1;
@@ -29,6 +28,8 @@ class GildedRose {
 
 	private ItemUpdater basicItemUpdater = new ItemUpdater();
 	private BackStageItemUpdater backStageItemUpdater = new BackStageItemUpdater();
+	private AgedBrieItemUpdater agedBrieItemUpdater = new AgedBrieItemUpdater();
+	private ConjuredItemUpdater conjuredItemUpdater = new ConjuredItemUpdater();
 
 
 	private Item[] items;
@@ -42,73 +43,29 @@ class GildedRose {
 	}
 
 	public void updateQuality() {
-
 		for (Item item : items) {
-			if (!NON_BASIC_ITEMS.contains(item.name)) {
-				basicItemUpdater.updateItem(item);
-			}
-
-			if (item.name.equals(ITEM_TAFKAL80ETC)) {
-				backStageItemUpdater.updateItem(item);
-			}
-
-			if (item.name.equals(ITEM_AGED_BRIE)) {
-				handleAgedBrie(item);
-			}
-
-			if (item.name.equals(ITEM_CONJURED)) {
-				handleConjuredItem(item);
-			}
+			updateItemQualityAndSellIn(item);
 		}
 	}
 
-	private void handleBackStageItem(Item item) {
-		int qualityIncrease = 1;
-		if (item.sellIn < SELLIN_HURRY) {
-			qualityIncrease = 3;
+	private void updateItemQualityAndSellIn(Item item) {
+		if (!NON_BASIC_ITEMS.contains(item.name)) {
+			basicItemUpdater.updateItem(item);
+		}
+		if (item.name.equals(ITEM_TAFKAL80ETC)) {
+			backStageItemUpdater.updateItem(item);
 		}
 
-		if (item.sellIn >= SELLIN_HURRY && item.sellIn < SELLIN_SOME_TIME) {
-			qualityIncrease = 2;
+		if (item.name.equals(ITEM_AGED_BRIE)) {
+			agedBrieItemUpdater.updateItem(item);
 		}
 
-		item.quality = increaseQuality(item.quality, qualityIncrease);
-		item.sellIn = item.sellIn - 1;
-		if (item.sellIn < 0) {
-			item.quality = 0;
-		}
-	}
-
-	private void handleAgedBrie(Item item) {
-		item.quality = increaseQuality(item.quality, 1);
-		item.sellIn = item.sellIn - 1;
-		if (item.sellIn < 0) {
-			item.quality = increaseQuality(item.quality, 1);
+		if (item.name.equals(ITEM_CONJURED)) {
+			conjuredItemUpdater.updateItem(item);
 		}
 	}
 
-	private void handleConjuredItem(Item item) {
-		item.quality = decreaseQuality(item.quality, (item.sellIn < 0 ? FAST_DEGRADATION*2 : NORMAL_DEGRADATION*2));
-		item.sellIn = item.sellIn - 1;
-	}
-
-	private static int decreaseQuality(int quality, int degradation) {
-		quality = quality - degradation;
-		if (quality < MIN_QUALITY_TRESHOLD) {
-			quality = MIN_QUALITY_TRESHOLD;
-		}
-		return quality;
-	}
-
-	private static int increaseQuality(int currentQuality, int increment) {
-		currentQuality = currentQuality + increment;
-		if (currentQuality > GildedRose.MAX_QUALITY_TRESHOLD) {
-			currentQuality = GildedRose.MAX_QUALITY_TRESHOLD;
-		}
-		return currentQuality;
-	}
-
-	class BackStageItemUpdater extends ItemUpdater {
+	private class BackStageItemUpdater extends ItemUpdater {
 		@Override
 		public void updateQuality(Item item) {
 			int qualityIncrease = 1;
@@ -121,9 +78,28 @@ class GildedRose {
 			}
 
 			item.quality = increaseTheQuality(item, qualityIncrease);
-			if ((item.sellIn -1) < 0) {
+			if ((item.sellIn - 1) < 0) {
 				item.quality = 0;
 			}
+		}
+	}
+
+	private class AgedBrieItemUpdater extends ItemUpdater {
+
+		@Override
+		public void updateQuality(Item item) {
+			item.quality = increaseTheQuality(item, 1);
+			if ((item.sellIn - 1) < 0) {
+				item.quality = increaseTheQuality(item, 1);
+			}
+		}
+	}
+
+	private class ConjuredItemUpdater extends ItemUpdater {
+
+		@Override
+		public void updateQuality(Item item) {
+			item.quality = decreaseTheQuality(item, (item.sellIn < 0 ? FAST_DEGRADATION * 2 : NORMAL_DEGRADATION * 2));
 		}
 	}
 }
