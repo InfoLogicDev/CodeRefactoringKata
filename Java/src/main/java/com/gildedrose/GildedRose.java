@@ -23,7 +23,7 @@ class GildedRose {
 			if (!items[i].name.equals(ITEM_AGED_BRIE)
 					&& !items[i].name.equals(ITEM_TAFKAL80ETC)
 					&& !items[i].name.equals(ITEM_SULFURAS)) {
-				items[i].quality = ifQualityHigherThenZeroAndNotSulfurusDecreaseQuality(items[i].name, items[i].quality);
+				items[i].quality = calculateBasicQuality(items[i]);
 			}
 
 			if (items[i].name.equals(ITEM_AGED_BRIE) || items[i].name.equals(ITEM_TAFKAL80ETC)) {
@@ -52,18 +52,11 @@ class GildedRose {
 				if (items[i].name.equals(ITEM_TAFKAL80ETC)) {
 					items[i].quality = 0;
 				}
-
-				if (!items[i].name.equals(ITEM_SULFURAS)
-						&& !items[i].name.equals(ITEM_TAFKAL80ETC)
-						&& !items[i].name.equals(ITEM_AGED_BRIE)
-				) {
-					items[i].quality = ifQualityHigherThenZeroAndNotSulfurusDecreaseQuality(items[i].name, items[i].quality);
-				}
 			}
 		}
 	}
 
-	private static int ifQualityHigherThenZeroAndNotSulfurusDecreaseQuality(String name, int quality) {
+	private static int decreaseQuality(int quality) {
 		if (quality > MIN_QUALITY_TRESHOLD) {
 			quality = quality - 1;
 		}
@@ -75,5 +68,13 @@ class GildedRose {
 			currentQuality = currentQuality + 1;
 		}
 		return currentQuality;
+	}
+
+	private static int calculateBasicQuality(Item item) {
+		int calculatedQuality = decreaseQuality(item.quality);
+		if (item.sellIn < 0){
+			calculatedQuality = decreaseQuality(calculatedQuality);
+		}
+		return calculatedQuality;
 	}
 }
