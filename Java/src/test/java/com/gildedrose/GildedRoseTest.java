@@ -66,7 +66,7 @@ class GildedRoseTest {
     }
 
     @Test
-    void updateQualitySulfurasItem() {
+    void updateQuality_sulfurasItem_IsNotChanging() {
         Item[] items = new Item[] { new Item("Sulfuras, Hand of Ragnaros", 0, 0) };
         GildedRose app = new GildedRose(items);
         app.updateQuality();
@@ -82,7 +82,7 @@ class GildedRoseTest {
     }
 
     @Test
-    void updateQualitySulfurasItemWithSellInAndQuality() {
+    void updateQuality_sulfurasItem_WithSellInAndQuality_IsNotChanging() {
         Item[] items = new Item[] { new Item("Sulfuras, Hand of Ragnaros", 5, 5) };
         GildedRose app = new GildedRose(items);
         app.updateQuality();

@@ -23,36 +23,39 @@ class GildedRose {
 			if (!items[i].name.equals(ITEM_AGED_BRIE)
 					&& !items[i].name.equals(ITEM_TAFKAL80ETC)
 					&& !items[i].name.equals(ITEM_SULFURAS)) {
-				items[i].quality = calculateBasicQuality(items[i]);
-			}
-
-			if (items[i].name.equals(ITEM_AGED_BRIE) || items[i].name.equals(ITEM_TAFKAL80ETC)) {
-				items[i].quality = incrementQuality(items[i].quality);
+				handleBasicItem(items[i]);
 			}
 
 			if (items[i].name.equals(ITEM_TAFKAL80ETC)) {
-				if (items[i].sellIn < 11) {
-					items[i].quality = incrementQuality(items[i].quality);
-				}
-
-				if (items[i].sellIn < 6) {
-					items[i].quality = incrementQuality(items[i].quality);
-				}
+				handleBackStageItem(items[i]);
 			}
 
-			if (!items[i].name.equals(ITEM_SULFURAS)) {
-				items[i].sellIn = items[i].sellIn - 1;
+			if (items[i].name.equals(ITEM_AGED_BRIE)) {
+				handleAgedBrie(items[i]);
 			}
+		}
+	}
 
-			if (items[i].sellIn < 0) {
-				if (items[i].name.equals(ITEM_AGED_BRIE)) {
-					items[i].quality = incrementQuality(items[i].quality);
-				}
+	private void handleBackStageItem(Item item) {
+		item.quality = incrementQuality(item.quality);
+		if (item.sellIn < 11) {
+			item.quality = incrementQuality(item.quality);
+		}
 
-				if (items[i].name.equals(ITEM_TAFKAL80ETC)) {
-					items[i].quality = 0;
-				}
-			}
+		if (item.sellIn < 6) {
+			item.quality = incrementQuality(item.quality);
+		}
+		item.sellIn = item.sellIn - 1;
+		if (item.sellIn < 0) {
+			item.quality = 0;
+		}
+	}
+
+	private void handleAgedBrie(Item item) {
+		item.quality = incrementQuality(item.quality);
+		item.sellIn = item.sellIn - 1;
+		if (item.sellIn < 0) {
+			item.quality = incrementQuality(item.quality);
 		}
 	}
 
@@ -70,11 +73,12 @@ class GildedRose {
 		return currentQuality;
 	}
 
-	private static int calculateBasicQuality(Item item) {
+	private void handleBasicItem(Item item) {
 		int calculatedQuality = decreaseQuality(item.quality);
 		if (item.sellIn < 0){
 			calculatedQuality = decreaseQuality(calculatedQuality);
 		}
-		return calculatedQuality;
+		item.sellIn = item.sellIn - 1;
+		item.quality = calculatedQuality;
 	}
 }
