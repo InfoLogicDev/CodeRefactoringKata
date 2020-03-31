@@ -28,6 +28,8 @@ class GildedRose {
 	}
 
 	private ItemUpdater basicItemUpdater = new ItemUpdater();
+	private BackStageItemUpdater backStageItemUpdater = new BackStageItemUpdater();
+
 
 	private Item[] items;
 
@@ -47,7 +49,7 @@ class GildedRose {
 			}
 
 			if (item.name.equals(ITEM_TAFKAL80ETC)) {
-				handleBackStageItem(item);
+				backStageItemUpdater.updateItem(item);
 			}
 
 			if (item.name.equals(ITEM_AGED_BRIE)) {
@@ -104,5 +106,24 @@ class GildedRose {
 			currentQuality = GildedRose.MAX_QUALITY_TRESHOLD;
 		}
 		return currentQuality;
+	}
+
+	class BackStageItemUpdater extends ItemUpdater {
+		@Override
+		public void updateQuality(Item item) {
+			int qualityIncrease = 1;
+			if (item.sellIn < SELLIN_HURRY) {
+				qualityIncrease = 3;
+			}
+
+			if (item.sellIn >= SELLIN_HURRY && item.sellIn < SELLIN_SOME_TIME) {
+				qualityIncrease = 2;
+			}
+
+			item.quality = increaseTheQuality(item, qualityIncrease);
+			if ((item.sellIn -1) < 0) {
+				item.quality = 0;
+			}
+		}
 	}
 }
