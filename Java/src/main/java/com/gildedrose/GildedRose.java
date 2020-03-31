@@ -4,9 +4,14 @@ class GildedRose {
 	public static final String ITEM_AGED_BRIE = "Aged Brie";
 	public static final String ITEM_TAFKAL80ETC = "Backstage passes to a TAFKAL80ETC concert";
 	public static final String ITEM_SULFURAS = "Sulfuras, Hand of Ragnaros";
-    Item[] items;
 
-    public GildedRose(Item[] items) {
+	private Item[] items;
+
+	public Item[] getItems() {
+		return items;
+	}
+
+	public GildedRose(Item[] items) {
         this.items = items;
     }
 
