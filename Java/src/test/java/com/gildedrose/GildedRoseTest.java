@@ -128,4 +128,20 @@ class GildedRoseTest {
         assertEquals(2, app.getItems()[0].sellIn);
         assertEquals(14, app.getItems()[0].quality);
     }
+
+    @Test
+    void updateQualityBackstageItemWithHigherSellInAndQuality() {
+        Item[] items = new Item[] { new Item("Backstage passes to a TAFKAL80ETC concert", 12, 12) };
+        GildedRose app = new GildedRose(items);
+        app.updateQuality();
+        assertEquals("Backstage passes to a TAFKAL80ETC concert", app.getItems()[0].name);
+        assertEquals(11, app.getItems()[0].sellIn);
+        assertEquals(13, app.getItems()[0].quality);
+        app.updateQuality();
+        assertEquals(10, app.getItems()[0].sellIn);
+        assertEquals(14, app.getItems()[0].quality);
+        app.updateQuality();
+        assertEquals(9, app.getItems()[0].sellIn);
+        assertEquals(16, app.getItems()[0].quality);
+    }
 }
