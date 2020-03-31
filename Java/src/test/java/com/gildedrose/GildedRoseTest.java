@@ -144,4 +144,20 @@ class GildedRoseTest {
         assertEquals(9, app.getItems()[0].sellIn);
         assertEquals(16, app.getItems()[0].quality);
     }
+
+    @Test
+    void updateQuality_ConjuredItem_degradesTwiceAsFast() {
+        Item[] items = new Item[] { new Item("Conjured, The Hand of God", 5, 5) };
+        GildedRose app = new GildedRose(items);
+        app.updateQuality();
+        assertEquals("Conjured, The Hand of God", app.getItems()[0].name);
+        assertEquals(4, app.getItems()[0].sellIn);
+        assertEquals(3, app.getItems()[0].quality);
+        app.updateQuality();
+        assertEquals(3, app.getItems()[0].sellIn);
+        assertEquals(1, app.getItems()[0].quality);
+        app.updateQuality();
+        assertEquals(2, app.getItems()[0].sellIn);
+        assertEquals(0, app.getItems()[0].quality);
+    }
 }
